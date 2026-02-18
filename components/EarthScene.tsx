@@ -1,15 +1,24 @@
 "use client";
 
-import {Canvas, useLoader} from "@react-three/fiber";
-import {OrbitControls, Stars} from "@react-three/drei";
+import {Canvas, useFrame, useLoader} from "@react-three/fiber";
+import {CameraControls, Stars} from "@react-three/drei";
 import * as THREE from "three";
+import {useRef} from "react";
 
 function Earth() {
 
     const texture = useLoader(THREE.TextureLoader, "/earth.jpg");
+    const earthRef = useRef<THREE.Mesh>(null!);
+
+    // This runs on every frame (animation loop)
+    useFrame(() => {
+        if (earthRef.current) {
+            earthRef.current.rotation.y += 0.001; // speed of rotation
+        }
+    });
 
     return (
-        <mesh>
+        <mesh ref={earthRef}>
             <sphereGeometry args={[2.5, 64, 64]} />
             <meshStandardMaterial map={texture} />
         </mesh>
@@ -34,7 +43,7 @@ export default function EarthScene() {
                 />
                 <Earth />
 
-                <OrbitControls />
+                <CameraControls />
             </Canvas>
         </div>
     );

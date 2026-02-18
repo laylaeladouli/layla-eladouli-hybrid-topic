@@ -5,7 +5,7 @@ export default function Home() {
   return (
       <main>
         <h1 style={{ textAlign: "center" }}>
-          3D Earth Demo
+          3D Earth
         </h1>
 
         <EarthScene />
