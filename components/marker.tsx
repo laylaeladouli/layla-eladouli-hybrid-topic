@@ -1,8 +1,8 @@
 "use client";
 
 import * as THREE from "three";
-import {useState} from "react";
-import {Html} from "@react-three/drei";
+import {useEffect, useState} from "react";
+import {Billboard, Html} from "@react-three/drei";
 
 function latLngToVector3(lat: number, lng: number, radius: number) {
     const phi = (90 - lat) * (Math.PI / 180);
@@ -33,6 +33,24 @@ export default function Marker({
     onSelect: () => void;
 }) {
     const position = latLngToVector3(lat, lng, 2.6);
+    const [description, setDescription] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!isSelected) return;
+        async function fetchWiki() {
+            try {
+                const response = await fetch(
+                    `https://en.wikipedia.org/api/rest_v1/page/summary/${name}`
+                );
+                const data = await response.json();
+                setDescription(data.extract);
+            } catch (error) {
+                console.error("Wiki fetch error:", error);
+            }
+        }
+        fetchWiki();
+    }, [isSelected, name]);
+
 
     return (
         <mesh
@@ -63,9 +81,10 @@ export default function Marker({
 
             {/* Label */}
             {isSelected && (
-                <Html position={[0, 0.2, 0]}
-                      distanceFactor={8}
+                <Billboard follow>
+                    <Html position={[0, 0.2, 0]}
                       occlude
+                      transform={false}
                 >
                     <div
                         style={{background: "rgba(0,0,0,0.85)",
@@ -73,12 +92,22 @@ export default function Marker({
                             padding: "6px 12px",
                             borderRadius: "12px",
                             fontSize: "13px",
-                            whiteSpace: "nowrap"
+                            whiteSpace: "normal",
+                            width: "300px",
+                            lineHeight: "1.5",      //better spacing
+                            wordWrap: "break-word", //wrap long words
+                            boxSizing: "border-box",
+                            wordBreak: "break-word",
                         }}
                     >
-                        {name}
+                        <strong style={{ display: "block", marginBottom: "8px", fontSize: "9px" }}>{name}</strong>
+                        <p style={{ marginTop: "6px", fontSize: "6px" }}>
+                            {description ? description : "Loading..."}
+                        </p>
+
                     </div>
-                </Html>
+                    </Html>
+                </Billboard>
             )}
         </mesh>
     );
