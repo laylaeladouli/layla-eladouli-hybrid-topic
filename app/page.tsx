@@ -1,4 +1,4 @@
-import EarthScene from "../components/EarthScene";
+import EarthScene from "../components/earthScene";
 
 export default function Home() {
 

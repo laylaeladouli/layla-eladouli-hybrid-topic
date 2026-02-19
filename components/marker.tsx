@@ -1,9 +1,8 @@
 "use client";
 
-import {Canvas, useFrame, useLoader} from "@react-three/fiber";
-import {CameraControls, Stars, Html } from "@react-three/drei";
 import * as THREE from "three";
-import {useRef, useState} from "react";
+import {useState} from "react";
+import {Html} from "@react-three/drei";
 
 function latLngToVector3(lat: number, lng: number, radius: number) {
     const phi = (90 - lat) * (Math.PI / 180);
@@ -16,8 +15,16 @@ function latLngToVector3(lat: number, lng: number, radius: number) {
     return new THREE.Vector3(x, y, z);
 }
 
-function Marker() {
-    const position = latLngToVector3(33, -6, 2.6);
+export const countries = [
+    { name: "Morocco", lat: 33, lng: -6 },
+    { name: "Belgium", lat: 50.5, lng: 4.5 },
+    { name: "USA", lat: 38, lng: -97 },
+    { name: "Spain", lat: 40, lng: -3 },
+    { name: "South Korea", lat: 36.5, lng: 127.8 },
+];
+
+export default function Marker({ name, lat, lng }: { name: string; lat: number; lng: number }) {
+    const position = latLngToVector3(lat, lng, 2.6);
     const [showLabel, setShowLabel] = useState(false);
 
     return (
@@ -49,14 +56,12 @@ function Marker() {
 
             {/* Label */}
             {showLabel && (
-                <Html
-                    position={[0, 0.2, 0]}
-                    distanceFactor={8}
-                    occlude
+                <Html position={[0, 0.2, 0]}
+                      distanceFactor={8}
+                      occlude
                 >
                     <div
-                        style={{
-                            background: "rgba(0,0,0,0.85)",
+                        style={{background: "rgba(0,0,0,0.85)",
                             color: "white",
                             padding: "6px 12px",
                             borderRadius: "12px",
@@ -64,57 +69,10 @@ function Marker() {
                             whiteSpace: "nowrap"
                         }}
                     >
-                        Morocco
+                        {name}
                     </div>
                 </Html>
             )}
         </mesh>
-    );
-}
-
-function Earth() {
-
-    const texture = useLoader(THREE.TextureLoader, "/earth.jpg");
-    const earthRef = useRef<THREE.Mesh>(null!);
-
-    // This runs on every frame (animation loop)
-    useFrame(() => {
-        if (earthRef.current) {
-            earthRef.current.rotation.y += 0.0002; // speed of rotation
-        }
-    });
-
-    return (
-        <mesh ref={earthRef}>
-            <sphereGeometry args={[2.5, 64, 64]} />
-            <meshStandardMaterial map={texture} />
-
-            <Marker />
-
-        </mesh>
-    );
-}
-
-export default function EarthScene() {
-
-    return (
-        <div style={{ height: "600px" }}>
-            <Canvas style={{ background: "black" }}>
-                <ambientLight intensity={0.8} />
-                <directionalLight position={[5, 5, 5]} intensity={2} />
-                <directionalLight position={[-5, -3, -5]} intensity={1} />
-
-                <Stars
-                    radius={100}
-                    depth={50}
-                    count={5000}
-                    factor={4}
-                    fade
-                />
-                <Earth />
-
-                <CameraControls />
-            </Canvas>
-        </div>
     );
 }
