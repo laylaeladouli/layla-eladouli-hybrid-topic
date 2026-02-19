@@ -23,9 +23,16 @@ export const countries = [
     { name: "South Korea", lat: 36.5, lng: 127.8 },
 ];
 
-export default function Marker({ name, lat, lng }: { name: string; lat: number; lng: number }) {
+export default function Marker({
+    name, lat, lng, isSelected, onSelect,
+}: {
+    name: string;
+    lat: number;
+    lng: number;
+    isSelected: boolean;
+    onSelect: () => void;
+}) {
     const position = latLngToVector3(lat, lng, 2.6);
-    const [showLabel, setShowLabel] = useState(false);
 
     return (
         <mesh
@@ -33,7 +40,7 @@ export default function Marker({ name, lat, lng }: { name: string; lat: number; 
             scale={0.3}
             onClick={(e) => {
                 e.stopPropagation();
-                setShowLabel((prev) => !prev);
+                onSelect();
             }}
             onPointerOver={() => {
                 document.body.style.cursor = "pointer";
@@ -55,7 +62,7 @@ export default function Marker({ name, lat, lng }: { name: string; lat: number; 
             </mesh>
 
             {/* Label */}
-            {showLabel && (
+            {isSelected && (
                 <Html position={[0, 0.2, 0]}
                       distanceFactor={8}
                       occlude

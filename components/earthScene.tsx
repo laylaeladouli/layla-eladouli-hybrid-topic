@@ -3,14 +3,14 @@
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
 import {CameraControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import Marker, {countries} from "./marker";
-
 
 function Earth() {
 
     const texture = useLoader(THREE.TextureLoader, "/earth.jpg");
     const earthRef = useRef<THREE.Mesh>(null!);
+    const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
     // This runs on every frame (animation loop)
     useFrame(() => {
@@ -30,6 +30,8 @@ function Earth() {
                     name={country.name}
                     lat={country.lat}
                     lng={country.lng}
+                    isSelected={selectedCountry === country.name}
+                    onSelect={() => setSelectedCountry(country.name)}
                 />
             ))}
 
