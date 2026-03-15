@@ -93,7 +93,7 @@ export default function Marker({
                             borderRadius: "12px",
                             fontSize: "13px",
                             whiteSpace: "normal",
-                            width: "300px",
+                            width: "350px",
                             lineHeight: "1.5",      //better spacing
                             wordWrap: "break-word", //wrap long words
                             boxSizing: "border-box",
@@ -101,7 +101,7 @@ export default function Marker({
                         }}
                     >
                         <strong style={{ display: "block", marginBottom: "8px", fontSize: "9px" }}>{name}</strong>
-                        <p style={{ marginTop: "6px", fontSize: "6px" }}>
+                        <p style={{ marginTop: "6px", fontSize: "10px" }}>
                             {description ? description : "Loading..."}
                         </p>
 
